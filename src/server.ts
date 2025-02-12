@@ -1,7 +1,7 @@
 // import { SubscriberInfoModel } from "./models/subscriberInfo";
 import express, { Application, Request } from "express";
+import router from "./routes";
 
-// import router from './routes';
 const mongoSantize = require("express-mongo-sanitize");
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
@@ -15,9 +15,14 @@ class Server {
     max: 1000,
   });
 
+  private routes(): void {
+    this.app.use("/api", router);
+  }
+
   constructor() {
     this.app = express();
     this.config();
+    this.routes();
     this.databaseConnect();
   }
 
@@ -29,9 +34,6 @@ class Server {
     this.app.use(helmet());
     this.app.use(cors<Request>());
     this.app.use((req, res, next) => {
-      res.setHeader("Access-Control-Allow-Origin", "*");
-      res.setHeader("Cross-Origin-Resource-Policy", "*");
-      res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
       next();
     });
   }
